@@ -14,9 +14,11 @@
 
 import {
   boolean,
+  integer,
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // ---------------------------------------------------------------------------
@@ -74,5 +76,87 @@ export const verification = pgTable("verification", {
 });
 
 // ---------------------------------------------------------------------------
-// App tables — add below this line during schema translation.
+// App tables — ThreadHunter domain tables.
 // ---------------------------------------------------------------------------
+
+/** A founder's product workspace: one product → one workspace, multiple subreddits. */
+export const workspaces = pgTable("workspaces", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  subreddits: text("subreddits").array().notNull().default([]),
+  createdAt: timestamp("created_at", { withTimezone: false }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: false }).notNull().defaultNow(),
+});
+
+/** Intent label values allowed for a detected Reddit thread. */
+export type IntentLabel =
+  | "asking-for-recs"
+  | "complaining-about-incumbent"
+  | "comparing-tools"
+  | "unrelated";
+
+/**
+ * A Reddit thread discovered for a workspace, deduplicated by
+ * (workspaceId, redditPostId). Unique index ensures the same post is
+ * only stored once per workspace even if re-crawled.
+ */
+export const threads = pgTable(
+  "threads",
+  {
+    id: text("id").primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    redditPostId: text("reddit_post_id").notNull(),
+    redditUrl: text("reddit_url").notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull().default(""),
+    subreddit: text("subreddit").notNull(),
+    intentLabel: text("intent_label")
+      .$type<IntentLabel>()
+      .notNull()
+      .default("unrelated"),
+    intentScore: integer("intent_score").notNull().default(0),
+    suggestedAngle: text("suggested_angle"),
+    replyScaffold: text("reply_scaffold"),
+    falsePositive: boolean("false_positive").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: false }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: false }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("threads_workspace_post_idx").on(t.workspaceId, t.redditPostId)],
+);
+
+/** Status values for a digest run. */
+export type DigestRunStatus = "pending" | "running" | "completed" | "failed";
+
+/** A scheduled or on-demand weekly digest execution for a workspace. */
+export const digestRuns = pgTable("digest_runs", {
+  id: text("id").primaryKey(),
+  workspaceId: text("workspace_id")
+    .notNull()
+    .references(() => workspaces.id, { onDelete: "cascade" }),
+  status: text("status")
+    .$type<DigestRunStatus>()
+    .notNull()
+    .default("pending"),
+  ranAt: timestamp("ran_at", { withTimezone: false }),
+  createdAt: timestamp("created_at", { withTimezone: false }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: false }).notNull().defaultNow(),
+});
+
+/** Ranked threads included in a digest run (5–10 per run, ordered by rank). */
+export const digestRunThreads = pgTable("digest_run_threads", {
+  id: text("id").primaryKey(),
+  digestRunId: text("digest_run_id")
+    .notNull()
+    .references(() => digestRuns.id, { onDelete: "cascade" }),
+  threadId: text("thread_id")
+    .notNull()
+    .references(() => threads.id, { onDelete: "cascade" }),
+  rank: integer("rank").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: false }).notNull().defaultNow(),
+});
