@@ -1,0 +1,596 @@
+{
+  "build_id": "35",
+  "plan_hash_note": "Read-only reference. Translate this into Drizzle code in lib/db/schema.ts.",
+  "tables": [
+    {
+      "name": "user",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "constraints": [
+            "primary key"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "unique"
+          ]
+        },
+        {
+          "name": "emailVerified",
+          "type": "boolean",
+          "constraints": [
+            "not null",
+            "default false"
+          ]
+        },
+        {
+          "name": "image",
+          "type": "text"
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "session",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "constraints": [
+            "primary key"
+          ]
+        },
+        {
+          "name": "userId",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "references user(id) on delete cascade"
+          ]
+        },
+        {
+          "name": "token",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "unique"
+          ]
+        },
+        {
+          "name": "expiresAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "ipAddress",
+          "type": "text"
+        },
+        {
+          "name": "userAgent",
+          "type": "text"
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "account",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "constraints": [
+            "primary key"
+          ]
+        },
+        {
+          "name": "userId",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "references user(id) on delete cascade"
+          ]
+        },
+        {
+          "name": "accountId",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "providerId",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "accessToken",
+          "type": "text"
+        },
+        {
+          "name": "refreshToken",
+          "type": "text"
+        },
+        {
+          "name": "idToken",
+          "type": "text"
+        },
+        {
+          "name": "accessTokenExpiresAt",
+          "type": "timestamp"
+        },
+        {
+          "name": "refreshTokenExpiresAt",
+          "type": "timestamp"
+        },
+        {
+          "name": "scope",
+          "type": "text"
+        },
+        {
+          "name": "password",
+          "type": "text"
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "verification",
+      "columns": [
+        {
+          "name": "id",
+          "type": "text",
+          "constraints": [
+            "primary key"
+          ]
+        },
+        {
+          "name": "identifier",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "value",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "expiresAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "workspaces",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "constraints": [
+            "primary key",
+            "default gen_random_uuid()"
+          ]
+        },
+        {
+          "name": "userId",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "references user(id) on delete cascade"
+          ]
+        },
+        {
+          "name": "productName",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "productUrl",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "productDescription",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "icp",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "subreddits",
+          "type": "jsonb",
+          "constraints": [
+            "not null",
+            "default '[]'"
+          ]
+        },
+        {
+          "name": "allowRules",
+          "type": "jsonb",
+          "constraints": [
+            "not null",
+            "default '[]'"
+          ]
+        },
+        {
+          "name": "blockRules",
+          "type": "jsonb",
+          "constraints": [
+            "not null",
+            "default '[]'"
+          ]
+        },
+        {
+          "name": "expandedQueries",
+          "type": "jsonb",
+          "constraints": [
+            "not null",
+            "default '[]'"
+          ]
+        },
+        {
+          "name": "plan",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "default 'free'",
+            "check (plan IN ('free','starter','pro'))"
+          ]
+        },
+        {
+          "name": "stripeCustomerId",
+          "type": "text"
+        },
+        {
+          "name": "stripeSubscriptionId",
+          "type": "text"
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null",
+            "default now()"
+          ]
+        },
+        {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null",
+            "default now()"
+          ]
+        }
+      ],
+      "indexes": [
+        {
+          "name": "workspaces_userId_idx",
+          "columns": [
+            "userId"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "threads",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "constraints": [
+            "primary key",
+            "default gen_random_uuid()"
+          ]
+        },
+        {
+          "name": "workspaceId",
+          "type": "uuid",
+          "constraints": [
+            "not null",
+            "references workspaces(id) on delete cascade"
+          ]
+        },
+        {
+          "name": "redditPostId",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "subreddit",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "default ''"
+          ]
+        },
+        {
+          "name": "author",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "url",
+          "type": "text",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "intentLabel",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "check (intentLabel IN ('asking-for-recs','complaining-about-incumbent','comparing-tools','unrelated'))"
+          ]
+        },
+        {
+          "name": "intentScore",
+          "type": "integer",
+          "constraints": [
+            "not null",
+            "default 0",
+            "check (intentScore >= 0 AND intentScore <= 100)"
+          ]
+        },
+        {
+          "name": "suggestedAngle",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "default ''"
+          ]
+        },
+        {
+          "name": "replyScaffold",
+          "type": "text",
+          "constraints": [
+            "not null",
+            "default ''"
+          ]
+        },
+        {
+          "name": "isFalsePositive",
+          "type": "boolean",
+          "constraints": [
+            "not null",
+            "default false"
+          ]
+        },
+        {
+          "name": "repliedAt",
+          "type": "timestamp"
+        },
+        {
+          "name": "digestSentAt",
+          "type": "timestamp"
+        },
+        {
+          "name": "postedAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null"
+          ]
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null",
+            "default now()"
+          ]
+        }
+      ],
+      "indexes": [
+        {
+          "name": "threads_workspace_reddit_unique",
+          "columns": [
+            "workspaceId",
+            "redditPostId"
+          ],
+          "unique": true
+        },
+        {
+          "name": "threads_workspace_score_idx",
+          "columns": [
+            "workspaceId",
+            "isFalsePositive",
+            "intentScore DESC"
+          ]
+        },
+        {
+          "name": "threads_digest_idx",
+          "columns": [
+            "workspaceId",
+            "digestSentAt"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "digest_runs",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "constraints": [
+            "primary key",
+            "default gen_random_uuid()"
+          ]
+        },
+        {
+          "name": "workspaceId",
+          "type": "uuid",
+          "constraints": [
+            "not null",
+            "references workspaces(id) on delete cascade"
+          ]
+        },
+        {
+          "name": "sentAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null",
+            "default now()"
+          ]
+        },
+        {
+          "name": "threadCount",
+          "type": "integer",
+          "constraints": [
+            "not null",
+            "default 0"
+          ]
+        },
+        {
+          "name": "createdAt",
+          "type": "timestamp",
+          "constraints": [
+            "not null",
+            "default now()"
+          ]
+        }
+      ],
+      "indexes": [
+        {
+          "name": "digest_runs_workspace_idx",
+          "columns": [
+            "workspaceId"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "digest_run_threads",
+      "columns": [
+        {
+          "name": "digestRunId",
+          "type": "uuid",
+          "constraints": [
+            "not null",
+            "references digest_runs(id) on delete cascade"
+          ]
+        },
+        {
+          "name": "threadId",
+          "type": "uuid",
+          "constraints": [
+            "not null",
+            "references threads(id) on delete cascade"
+          ]
+        }
+      ],
+      "constraints": [
+        "primary key (digestRunId, threadId)"
+      ],
+      "indexes": [
+        {
+          "name": "drt_thread_idx",
+          "columns": [
+            "threadId"
+          ]
+        }
+      ]
+    }
+  ]
+}
