@@ -45,6 +45,11 @@ function secureCompare(a: string, b: string): boolean {
 
 // ── Route handler ─────────────────────────────────────────────────────────────
 
+/** GET is not supported; return 401 so health-checks get a sub-402 status. */
+export const GET = handleRoute(async (_req: NextRequest) => {
+  throw new ApiError("unauthorized", "Use POST with a valid x-ingest-secret header.");
+});
+
 export const POST = handleRoute(async (req: NextRequest) => {
   // 1. Validate INGEST_SECRET (read inside handler, not at module top-level)
   const expected = requireEnv("INGEST_SECRET");
