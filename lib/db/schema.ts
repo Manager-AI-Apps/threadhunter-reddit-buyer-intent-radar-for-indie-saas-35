@@ -79,6 +79,9 @@ export const verification = pgTable("verification", {
 // App tables — ThreadHunter domain tables.
 // ---------------------------------------------------------------------------
 
+/** Allowed plan values for a workspace. */
+export type WorkspacePlan = "free" | "starter" | "pro";
+
 /** A founder's product workspace: one product → one workspace, multiple subreddits. */
 export const workspaces = pgTable("workspaces", {
   id: text("id").primaryKey(),
@@ -96,6 +99,12 @@ export const workspaces = pgTable("workspaces", {
   allowRules: text("allow_rules").array().notNull().default([]),
   /** Keywords/phrases that disqualify a thread from scoring. */
   blockRules: text("block_rules").array().notNull().default([]),
+  /** Billing plan for this workspace. Defaults to free tier. */
+  plan: text("plan").$type<WorkspacePlan>().notNull().default("free"),
+  /** Stripe customer ID associated with this workspace's owner. */
+  stripeCustomerId: text("stripe_customer_id"),
+  /** Active Stripe subscription ID for this workspace. */
+  stripeSubscriptionId: text("stripe_subscription_id"),
   createdAt: timestamp("created_at", { withTimezone: false }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: false }).notNull().defaultNow(),
 });
