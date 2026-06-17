@@ -17,7 +17,13 @@ import { db } from "@/lib/db";
 import { threads, workspaces } from "@/lib/db/schema";
 import { ApiError } from "@/lib/api-error";
 
-export async function markFalsePositive(threadId: string): Promise<void> {
+export interface MarkFalsePositiveResult {
+  ok: true;
+}
+
+export async function markFalsePositive(
+  threadId: string,
+): Promise<MarkFalsePositiveResult> {
   if (!threadId || typeof threadId !== "string") {
     throw new ApiError("bad_request", "threadId is required.");
   }
@@ -63,4 +69,6 @@ export async function markFalsePositive(threadId: string): Promise<void> {
     .where(eq(threads.id, threadId));
 
   revalidatePath("/dashboard");
+
+  return { ok: true };
 }
