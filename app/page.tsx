@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Layers, ShieldCheck } from "lucide-react";
+import { BarChart2, Mail, List } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,31 +7,24 @@ import { FeatureGrid, type Feature } from "@/components/blocks/feature-grid";
 import { Hero } from "@/components/blocks/hero";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-/**
- * Scaffold landing page — a working REFERENCE that composes the Hero +
- * FeatureGrid blocks. Every build MUST replace this with a product-specific
- * landing (real name, value prop, and features tied to the spec) using these
- * same blocks. Shipping this generic copy is a defect the conformance gate
- * catches.
- */
 const FEATURES: Feature[] = [
   {
-    icon: <BarChart3 className="size-6" />,
-    title: "Dashboards out of the box",
+    icon: <BarChart2 className="size-6" />,
+    title: "Intent Scoring",
     description:
-      "Stat cards, data tables, and an app shell ready to render real data.",
+      "Every thread is labeled — asking-for-recs, complaining-about-incumbent, comparing-tools — and scored 0–100 so you only reply where it counts.",
   },
   {
-    icon: <Layers className="size-6" />,
-    title: "Composable blocks",
+    icon: <Mail className="size-6" />,
+    title: "Weekly Digest",
     description:
-      "Hero, pricing, tables, empty states — all wired to the design system.",
+      "Receive 5–10 ranked threads per product every week, each with a suggested angle and a disclosure-safe reply scaffold ready to paste.",
   },
   {
-    icon: <ShieldCheck className="size-6" />,
-    title: "Themed per app",
+    icon: <List className="size-6" />,
+    title: "Subreddit Watchlist",
     description:
-      "Each build gets its own archetype: fonts, canvas, and accent that fit it.",
+      "Pin 3–8 subreddits and set allow/block rules. One-click false-positive feedback retrains scoring so the list gets sharper over time.",
   },
 ];
 
@@ -40,7 +33,7 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <span className="font-display text-base font-semibold tracking-tight">
-          Build Engine
+          ThreadHunter
         </span>
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="sm">
@@ -54,13 +47,21 @@ export default function Home() {
       </header>
 
       <Hero
-        eyebrow={<Badge variant="secondary">Generated end-to-end</Badge>}
-        title="Modern SaaS, generated end-to-end."
-        subtitle="This scaffold ships the design system every Build Engine app inherits: a per-app archetype, a shadcn UI kit, an app shell, and ready-made blocks."
+        eyebrow={
+          <Badge variant="secondary" className="px-3 py-1 text-sm font-medium">
+            Reddit buyer-intent radar for indie SaaS
+          </Badge>
+        }
+        title={
+          <>
+            ThreadHunter — Find buyers on Reddit before they find you
+          </>
+        }
+        subtitle="Stop drowning in false-positive keyword pings. ThreadHunter scores every thread by buyer-intent and delivers a weekly shortlist of 5–10 high-signal threads worth replying to — not 500 noise alerts."
         actions={
           <>
             <Button asChild size="lg">
-              <Link href="/sign-up">Get started</Link>
+              <Link href="/sign-up">Get started free</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/sign-in">Sign in</Link>
