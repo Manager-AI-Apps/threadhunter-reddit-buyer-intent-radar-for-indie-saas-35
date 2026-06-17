@@ -6,12 +6,16 @@
  * in-process pglite database without patching module internals.
  */
 
-import { and, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 
 import { db as defaultDb, type Database } from "@/lib/db";
 import { threads, workspaces, type IntentLabel } from "@/lib/db/schema";
 import { fetchSubredditNew, type RedditPost } from "@/lib/reddit-client";
 import { classifyPost, type ClassificationResult } from "@/lib/intent-classifier";
+
+// ── Exported types ────────────────────────────────────────────────────────────
+
+export type ThreadRow = typeof threads.$inferSelect;
 
 // ── Public types ──────────────────────────────────────────────────────────────
 
@@ -44,6 +48,31 @@ export interface IngestResult {
 }
 
 // ── Queries ───────────────────────────────────────────────────────────────────
+
+/**
+ * Returns all non-false-positive threads for a workspace, ordered by
+ * intentScore descending (highest intent first).
+ *
+ * @param workspaceId  The workspace to fetch threads for.
+ * @param database     Optional DB override for integration tests.
+ */
+export async function getThreadsForWorkspace(
+  workspaceId: string,
+  database: Database = defaultDb,
+): Promise<ThreadRow[]> {
+  return database
+    .select()
+    .from(threads)
+    .where(
+      and(
+        eq(threads.workspaceId, workspaceId),
+        eq(threads.falsePositive, false),
+      ),
+    )
+    .orderBy(desc(threads.intentScore));
+}
+
+
 
 /**
  * Returns the set of redditPostIds that already exist in the `threads` table
