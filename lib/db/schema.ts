@@ -132,6 +132,8 @@ export const threads = pgTable(
     suggestedAngle: text("suggested_angle"),
     replyScaffold: text("reply_scaffold"),
     falsePositive: boolean("false_positive").notNull().default(false),
+    /** Set when this thread appears in a weekly digest email. */
+    digestSentAt: timestamp("digest_sent_at", { withTimezone: false }),
     createdAt: timestamp("created_at", { withTimezone: false }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: false }).notNull().defaultNow(),
   },

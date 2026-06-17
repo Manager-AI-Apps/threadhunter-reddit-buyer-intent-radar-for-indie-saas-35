@@ -35,6 +35,7 @@ const BASE_THREAD: ThreadRow = {
   suggestedAngle: "Position as lightweight alternative",
   replyScaffold: "Hey, I built something for this…",
   falsePositive: false,
+  digestSentAt: null,
   createdAt: new Date("2025-01-01"),
   updatedAt: new Date("2025-01-01"),
 };
